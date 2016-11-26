@@ -138,10 +138,12 @@ mtcars <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://vinc
 <div id="selecting-row-by-numeric-index" class="section level4 unnumbered">
 <h4>Selecting row by numeric index</h4>
 <p><strong><code>R</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="dv">1</span>,]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="dv">1</span>,]
+mtcars[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),]</code></pre></div>
 <p>This returns a <code>'data.frame':   1 obs. of  11 variables</code></p>
 <p><strong><code>Python</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[<span class="dv">0</span>,:]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[<span class="dv">0</span>,:]
+mtcars.iloc[[<span class="dv">0</span>,<span class="dv">1</span>],:]</code></pre></div>
 <p>This returns a <code>pandas.core.series.Series</code></p>
 </div>
 <div id="selecting-row-by-named-index" class="section level4 unnumbered">
@@ -200,7 +202,19 @@ mtcars.columns</code></pre></div>
 </div>
 <div id="edge-cases" class="section level3 unnumbered">
 <h3>Edge cases?</h3>
-<p>Things can get ambiguous in two situations: 1) You have integer row or column names which aren’t just ascending integers starting at 0 (Python) or 1 (R). This creates an ambiguity between indexing my name or by number 2) You have an index with duplicate values.</p>
+<p>Things can get ambiguous in two situations:</p>
+<ol style="list-style-type: decimal">
+<li>You have integer row or column names which aren’t just ascending integers starting at 0 (Python) or 1 (R). This creates an ambiguity between indexing my name or by number</li>
+<li>You have an index with duplicate values.</li>
+</ol>
+<div id="integer-rowcolumns-names-which-arent-just-123n" class="section level4">
+<h4><span class="header-section-number">0.0.0.2</span> Integer row/columns names which aren’t just 1,2,3…,n</h4>
+<p>In R, row names are always strings, which resolves this ambiguity</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/a9f998ad9fdc314b1019fbc1866a2ea97d717b6a/f.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
+df[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>),]
+df[]</code></pre></div>
+</div>
 </div>
 <div id="subsetting" class="section level3">
 <h3><span class="header-section-number">0.0.1</span> Subsetting</h3>
