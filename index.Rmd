@@ -9,4 +9,4 @@ output:
 
 # Random notes {-}
 
-A blog containing random programming notes
+A random assortment of programming notes
