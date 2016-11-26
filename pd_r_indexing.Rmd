@@ -1,9 +1,9 @@
-# A comparison of indexing in R and Python {-}
+# A comparison of indexing and subsetting in R and Python {-}
 
 
 ## Dataframes {-}
 
-In what follows we assume python has access to a dataframe called mtcars which is constructed on the same basis as the R one.
+In what follows we assume Python has access to a dataframe called mtcars which is constructed on the same basis as the R one.
 
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"}
 import pandas as pd 
@@ -18,6 +18,7 @@ mtcars = pd.read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/dataset
 **`R`**
 ```{r eval=FALSE}
 mtcars[1,]
+mtcars[c(1,2),]
 ```
 
 This returns a `'data.frame':	1 obs. of  11 variables`
@@ -25,6 +26,7 @@ This returns a `'data.frame':	1 obs. of  11 variables`
 **`Python`**
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
 mtcars.iloc[0,:]
+mtcars.iloc[[0,1],:]
 ```
 
 This returns a `pandas.core.series.Series`
@@ -50,7 +52,7 @@ This returns a `pandas.core.series.Series`
 #### Selecting column by numeric index {-}
 
 **`R`**
-```{r foo, eval=FALSE}
+```{r eval=FALSE}
 mtcars[,1 ]
 ```
 
@@ -63,7 +65,74 @@ mtcars.iloc[:,0]
 
 This returns a `pandas.core.series.Series`
 
-### Selecting individual items {-}
+### Selecting individual 'cells' (items) {-}
+
+#### Selecting item by numeric index {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars[1,1 ]
+```
+
+This returns a numeric vector with a single item
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.iloc[0,0]
+```
+
+This returns a float
+
+#### Selecting item by named index {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars['Mazda RX4','mpg']
+```
+
+This returns a numeric atomic vector with a single item.
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.loc['Mazda RX4','mpg]
+```
+
+This returns a float.
+
+#### Obtaining the index itself
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.index
+mtcars.columns
+```
+These are both of type `pandas.indexes.base.Index`
+
+**`R`**
+```{r eval=FALSE}
+names(mtcars)
+rownames(mtcars)
+```
+These are both atomic vectors of strings.
+
+###  Edge cases? {-}
+
+Things can get ambiguous in two situations:
+
+1. You have integer row or column names which aren't just ascending integers starting at 0 (Python) or 1 (R).  This creates an ambiguity between indexing my name or by number
+2. You have an index with duplicate values.
+
+
+#### Integer row/columns names which aren't just 1,2,3...,n
+
+In R, row names are always strings, which resolves this ambiguity  
+
+**`R`**
+```{r eval=FALSE}
+df <- read.csv("https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/a9f998ad9fdc314b1019fbc1866a2ea97d717b6a/f.csv", row.names = 1)
+df[c(1,2,3),]
+df[]
+```
 
 
 
