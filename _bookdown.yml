@@ -1,0 +1,7 @@
+book_filename: "bookdown-demo"
+language:
+  ui:
+    chapter_name: ""
+number_section: false
+rmd_files:
+  html: ["index.Rmd", "pd_r_indexing.Rmd" ]

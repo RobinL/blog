@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-
-<link rel="next" href="a-comparison-of-indexing-in-r-and-python.html">
+<link rel="prev" href="index.html">
+<link rel="next" href="setup.html">
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -123,20 +123,55 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<!--bookdown:title:end-->
-<!--bookdown:title:start-->
-<div id="random-notes" class="section level1 unnumbered">
-<h1>Random notes</h1>
-<p>A blog containing random programming notes</p>
-
+<div id="a-comparison-of-indexing-in-r-and-python" class="section level1 unnumbered">
+<h1>A comparison of indexing in R and Python</h1>
+<div id="dataframes" class="section level2 unnumbered">
+<h2>Dataframes</h2>
+<p>In what follows we assume python has access to a dataframe called mtcars which is constructed on the same basis as the R one.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> pandas <span class="im">as</span> pd 
+mtcars <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv&quot;</span>, index_col<span class="op">=</span><span class="dv">0</span>)</code></pre></div>
+<div id="selecting-rows" class="section level3 unnumbered">
+<h3>Selecting rows</h3>
+<div id="selecting-row-by-numeric-index" class="section level4 unnumbered">
+<h4>Selecting row by numeric index</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="dv">1</span>,]</code></pre></div>
+<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code></p>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[<span class="dv">0</span>,:]</code></pre></div>
+<p>This returns a <code>pandas.core.series.Series</code></p>
+</div>
+<div id="selecting-row-by-named-index" class="section level4 unnumbered">
+<h4>Selecting row by named index</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="st">&#39;Mazda RX4&#39;</span>, ]</code></pre></div>
+<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code></p>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.loc[<span class="st">&#39;Mazda RX4&#39;</span>,:]</code></pre></div>
+<p>This returns a <code>pandas.core.series.Series</code></p>
+</div>
+</div>
+<div id="selecting-columns" class="section level3 unnumbered">
+<h3>Selecting columns</h3>
+<div id="selecting-column-by-numeric-index" class="section level4 unnumbered">
+<h4>Selecting column by numeric index</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[,<span class="dv">1</span> ]</code></pre></div>
+<p>This returns a numeric vector.</p>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[:,<span class="dv">0</span>]</code></pre></div>
+<p>This returns a <code>pandas.core.series.Series</code></p>
+</div>
+</div>
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="a-comparison-of-indexing-in-r-and-python.html" class="navigation navigation-next navigation-unique" aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="setup.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>

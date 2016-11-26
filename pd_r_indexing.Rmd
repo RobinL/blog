@@ -1,0 +1,86 @@
+# A comparison of indexing in R and Python {-}
+
+
+## Dataframes {-}
+
+In what follows we assume python has access to a dataframe called mtcars which is constructed on the same basis as the R one.
+
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"}
+import pandas as pd 
+mtcars = pd.read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/datasets/mtcars.csv", index_col=0)
+```
+
+
+### Selecting rows {-}
+
+#### Selecting row by numeric index {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars[1,]
+```
+
+This returns a `'data.frame':	1 obs. of  11 variables`
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.iloc[0,:]
+```
+
+This returns a `pandas.core.series.Series`
+
+#### Selecting row by named index {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars['Mazda RX4', ]
+```
+
+This returns a `'data.frame':	1 obs. of  11 variables`
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.loc['Mazda RX4',:]
+```
+
+This returns a `pandas.core.series.Series`
+
+### Selecting columns {-}
+
+#### Selecting column by numeric index {-}
+
+**`R`**
+```{r foo, eval=FALSE}
+mtcars[,1 ]
+```
+
+This returns a numeric vector.
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.iloc[:,0]
+```
+
+This returns a `pandas.core.series.Series`
+
+### Selecting individual items {-}
+
+
+
+### Subsetting
+
+
+#Setup {-}
+
+Here are some notes on running the code in this .Rmd.
+
+To run the code, you'll want to remove `eval=FALSE` from the code blocks.
+
+In what follows we are going to use the `mtcars` dataset.  If you want to run this code in Python, you'll need access to the dataset.  You can get this by doing:  `pip install ggplot` and then in python `from ggplot import mtcars`
+
+Note that in order for the Python code to execute, you need to make sure that `Sys.which('python')` returns the path for Anaconda rather than Mac OS default python.  See [here](http://rmarkdown.rstudio.com/authoring_knitr_engines.html), [here](http://stackoverflow.com/questions/27097169/why-r-is-calling-system-python-instead-of-default-python-in-user-path) and [here](https://support.rstudio.com/hc/en-us/community/posts/207644217-Rstudio-server-doesn-t-have-login-user-s-environment-variables-).  The solution I found was 
+
+````
+cd ~
+echo .Renviron >> PATH=/Users/robinlinacre/anaconda/bin
+````
