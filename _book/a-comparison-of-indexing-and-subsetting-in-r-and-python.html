@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="index.html">
-<link rel="next" href="setup.html">
+
 
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -104,11 +104,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#selecting-rows"><i class="fa fa-check"></i>Selecting rows</a></li>
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#selecting-columns"><i class="fa fa-check"></i>Selecting columns</a></li>
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#selecting-individual-cells-items"><i class="fa fa-check"></i>Selecting individual ‘cells’ (items)</a></li>
-<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#edge-cases"><i class="fa fa-check"></i>Edge cases?</a></li>
-<li class="chapter" data-level="0.0.1" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#subsetting"><i class="fa fa-check"></i><b>0.0.1</b> Subsetting</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#selecting-items-with-a-logical-vector"><i class="fa fa-check"></i>Selecting items with a logical vector</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#edge-cases"><i class="fa fa-check"></i>Edge cases</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#writing-to-a-dataframe"><i class="fa fa-check"></i>Writing to a dataframe</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#subsetting"><i class="fa fa-check"></i>Subsetting</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="setup.html"><a href="setup.html"><i class="fa fa-check"></i>Setup</a></li>
 </ul>
 
       </nav>
@@ -138,22 +140,24 @@ mtcars <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://vinc
 <div id="selecting-row-by-numeric-index" class="section level4 unnumbered">
 <h4>Selecting row by numeric index</h4>
 <p><strong><code>R</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="dv">1</span>,]
-mtcars[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),]</code></pre></div>
-<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="dv">1</span>,]  <span class="co">#Select row number 1</span>
+mtcars[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),] <span class="co">#Select row numbers 1 and 2</span></code></pre></div>
+<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code> or a <code>'data.frame':    2 obs. of  11 variables</code></p>
 <p><strong><code>Python</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[<span class="dv">0</span>,:]
-mtcars.iloc[[<span class="dv">0</span>,<span class="dv">1</span>],:]</code></pre></div>
-<p>This returns a <code>pandas.core.series.Series</code></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[<span class="dv">0</span>,:]  <span class="co">#Select row number 1 (zero based indexing)</span>
+mtcars.iloc[[<span class="dv">0</span>,<span class="dv">1</span>],:]  <span class="co">#Select rows number 1 and 2.</span></code></pre></div>
+<p>This returns a <code>pandas.core.series.Series</code> if you select a single row, or a <code>pandas.core.frame.DataFrame</code> if you select multiple rows.</p>
 </div>
 <div id="selecting-row-by-named-index" class="section level4 unnumbered">
 <h4>Selecting row by named index</h4>
 <p><strong><code>R</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="st">&#39;Mazda RX4&#39;</span>, ]</code></pre></div>
-<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="st">&#39;Mazda RX4&#39;</span>, ]
+mtcars[<span class="kw">c</span>(<span class="st">&#39;Mazda RX4&#39;</span>,<span class="st">&#39;Mazda RX4 Wag&#39;</span>), ]</code></pre></div>
+<p>This returns a <code>'data.frame':   1 obs. of  11 variables</code> or a <code>'data.frame':    2 obs. of  11 variables</code></p>
 <p><strong><code>Python</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.loc[<span class="st">&#39;Mazda RX4&#39;</span>,:]</code></pre></div>
-<p>This returns a <code>pandas.core.series.Series</code></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.loc[<span class="st">&#39;Mazda RX4&#39;</span>,:]
+mtcars.loc[[<span class="st">&#39;Mazda RX4&#39;</span>, <span class="st">&#39;Mazda RX4 Wag&#39;</span>],:]</code></pre></div>
+<p>This returns a <code>pandas.core.series.Series</code> if you select a single row, or a <code>pandas.core.frame.DataFrame</code> if you select multiple rows.</p>
 </div>
 </div>
 <div id="selecting-columns" class="section level3 unnumbered">
@@ -161,11 +165,12 @@ mtcars.iloc[[<span class="dv">0</span>,<span class="dv">1</span>],:]</code></pre
 <div id="selecting-column-by-numeric-index" class="section level4 unnumbered">
 <h4>Selecting column by numeric index</h4>
 <p><strong><code>R</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[,<span class="dv">1</span> ]</code></pre></div>
-<p>This returns a numeric vector.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[,<span class="dv">1</span> ]
+mtcars[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</code></pre></div>
+<p>If we select a single column, this return an atomic vector. If we select multiple columns, it returns a <code>'data.frame':  32 obs. of  2 variables:</code></p>
 <p><strong><code>Python</code></strong></p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.iloc[:,<span class="dv">0</span>]</code></pre></div>
-<p>This returns a <code>pandas.core.series.Series</code></p>
+<p>If we select a single column, this returns a <code>pandas.core.series.Series</code>. If we select multiple columns, it returns a <code>pandas.core.frame.DataFrame</code>.</p>
 </div>
 </div>
 <div id="selecting-individual-cells-items" class="section level3 unnumbered">
@@ -188,37 +193,124 @@ mtcars.iloc[[<span class="dv">0</span>,<span class="dv">1</span>],:]</code></pre
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.loc[<span class="st">&#39;Mazda RX4&#39;</span>,<span class="st">&#39;mpg]</span></code></pre></div>
 <p>This returns a float.</p>
 </div>
-<div id="obtaining-the-index-itself" class="section level4">
-<h4><span class="header-section-number">0.0.0.1</span> Obtaining the index itself</h4>
+</div>
+<div id="selecting-items-with-a-logical-vector" class="section level3 unnumbered">
+<h3>Selecting items with a logical vector</h3>
+<p>It is possible to use a logical vector (a series of <a href="https://gist.github.com/jfarmer/2647362">‘truthy’ and ‘falsey’</a> values) to filter a dataframe.</p>
+<p>For instance, if your rows are <code>1,2,3</code> a logical vector <code>true, false, true</code> will select rows 1 and 3.</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The following df has 3 rows and 3 columns</span>
+df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
+logical_vector &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>,<span class="ot">FALSE</span>, <span class="ot">TRUE</span>)
+df[logical_vector,]
+df[,logical_vector]
+
+logical_vector &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">FALSE</span>)
+df[logical_vector,] <span class="co">#This works due to R&#39;s vector recyclig </span>
+df[,logical_vector]</code></pre></div>
+<p>For more on vector recycling in R, see <a href="http://stackoverflow.com/questions/9335099/implementation-of-standard-recycling-rules">here</a>.</p>
 <p><strong><code>Python</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.index
-mtcars.columns</code></pre></div>
-<p>These are both of type <code>pandas.indexes.base.Index</code></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">df <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv&quot;</span>, index_col<span class="op">=</span><span class="dv">0</span>)
+logical_vector <span class="op">=</span> [<span class="va">True</span>, <span class="va">False</span>, <span class="va">True</span>]
+df.loc[logical_vector,:]
+df.loc[:,logical_vector]
+
+logical_vector <span class="op">=</span> [<span class="va">True</span>, <span class="va">False</span>]
+df.loc[logical_vector,:] <span class="co">#Different behaviour to R - no recycling</span>
+df.loc[:,logical_vector]</code></pre></div>
+<div id="obtaining-the-index-itself" class="section level4 unnumbered">
+<h4>Obtaining the index itself</h4>
 <p><strong><code>R</code></strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(mtcars)
 <span class="kw">rownames</span>(mtcars)</code></pre></div>
 <p>These are both atomic vectors of strings.</p>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars.index
+mtcars.columns</code></pre></div>
+<p>These are both of type <code>pandas.indexes.base.Index</code></p>
 </div>
 </div>
 <div id="edge-cases" class="section level3 unnumbered">
-<h3>Edge cases?</h3>
+<h3>Edge cases</h3>
 <p>Things can get ambiguous in two situations:</p>
 <ol style="list-style-type: decimal">
 <li>You have integer row or column names which aren’t just ascending integers starting at 0 (Python) or 1 (R). This creates an ambiguity between indexing my name or by number</li>
 <li>You have an index with duplicate values.</li>
 </ol>
-<div id="integer-rowcolumns-names-which-arent-just-123n" class="section level4">
-<h4><span class="header-section-number">0.0.0.2</span> Integer row/columns names which aren’t just 1,2,3…,n</h4>
-<p>In R, row names are always strings, which resolves this ambiguity</p>
+<div id="integer-rowcolumns-names-which-arent-just-123n" class="section level4 unnumbered">
+<h4>Integer row/columns names which aren’t just 1,2,3…,n</h4>
+<p>In R, row names are always strings, which resolves this ambiguity<br />
+Data for these examples are <a href="https://gist.github.com/RobinL/7378abcb98d70f642a4047f4e01fd428">here</a></p>
 <p><strong><code>R</code></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/a9f998ad9fdc314b1019fbc1866a2ea97d717b6a/f.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
-df[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>),]
-df[]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/5e26ef7581804308cd244a499737ead03eba66e8/f.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
+df[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>),] <span class="co"># Selects rows in positions 1,2,3 </span>
+df[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">7</span>),] <span class="co"># Selects rows in positions 1,2,3 and a blank row</span>
+df[<span class="kw">c</span>(<span class="st">&quot;2&quot;</span>,<span class="st">&quot;4&quot;</span>,<span class="st">&quot;6&quot;</span>),] <span class="co">#  #Selects rows named &quot;2&quot;,&quot;4&quot;, and &quot;6&quot;&quot; corresponding to position 1, 2 and 3</span>
+df[<span class="kw">c</span>(<span class="st">&quot;2&quot;</span>,<span class="st">&quot;4&quot;</span>,<span class="st">&quot;5&quot;</span>,<span class="st">&quot;6&quot;</span>),] <span class="co"># Row &quot;5&quot; does not exist, so it creates a blank row in the results</span></code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">df <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/5e26ef7581804308cd244a499737ead03eba66e8/f.csv&quot;</span>, index_col<span class="op">=</span><span class="dv">0</span>)
+df.iloc[[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>],:] <span class="co">#Selects rows in position 1, 2 and 3</span>
+df.iloc[[<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">6</span>],:] <span class="co">#IndexError: positional indexers are out-of-bounds</span>
+
+df.loc[[<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>],:] <span class="co">#Selects rows named 2,4, and 6 corresponding to position 0, 1 and 2</span>
+df.loc[[<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">99</span>],:] <span class="co">#Selects rows named 2,4, and 6 corresponding to position 0, 1 and 2, plus creates a row of NA with index 99</span></code></pre></div>
+<p>You can also use the pandas function <code>ix</code> for this, but I advise against it. See advice on the use of <code>ix</code> <a href="http://stackoverflow.com/questions/31593201/pandas-iloc-vs-ix-vs-loc-explanation/31593712#31593712">here</a>.</p>
+</div>
+<div id="duplicated-row-or-column-names" class="section level4 unnumbered">
+<h4>Duplicated row or column names</h4>
+<p>Consider <a href="https://gist.github.com/RobinL/05eea0870961a80814da5ae22f25f407">this</a> table.</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/05eea0870961a80814da5ae22f25f407/raw/bd6f6cd2cf8edd22763e2afa460bf9a7c9bdd79b/tiny_dup.csv&quot;</span>, <span class="dt">row.names=</span><span class="dv">1</span>)
+<span class="co">#Error in read.table(file = file, header = header, sep = sep, quote = quote,  : </span>
+<span class="co">#  duplicate &#39;row.names&#39; are not allowed</span></code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">df <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/05eea0870961a80814da5ae22f25f407/raw/bd6f6cd2cf8edd22763e2afa460bf9a7c9bdd79b/tiny_dup.csv&quot;</span>, index_col<span class="op">=</span><span class="dv">0</span>, mangle_dupe_cols<span class="op">=</span><span class="va">False</span>)
+
+df.loc[<span class="dv">2</span>, <span class="st">&quot;b&quot;</span>] <span class="co"># Returns 2 rows and 2 columns</span></code></pre></div>
 </div>
 </div>
-<div id="subsetting" class="section level3">
-<h3><span class="header-section-number">0.0.1</span> Subsetting</h3>
+<div id="writing-to-a-dataframe" class="section level3 unnumbered">
+<h3>Writing to a dataframe</h3>
+<div id="writing-to-individual-cells" class="section level4 unnumbered">
+<h4>Writing to individual ’cells</h4>
+<p>In what follows I use name based indexing, but the following would also work with numeric (positional) indexing.</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Edit existing value</span>
+mtcars[<span class="st">&quot;Mazda RX4&quot;</span>, <span class="st">&quot;mpg&quot;</span>] =<span class="st"> </span><span class="fl">21.1</span>
+
+<span class="co">#Create new value</span>
+mtcars[<span class="st">&quot;Future car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] =<span class="st"> </span><span class="dv">999</span> <span class="co">#A new row is created.  All values are set to NA except for &#39;mpg&#39; column</span>
+
+mtcars[<span class="st">&quot;Future car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] =<span class="st"> &quot;Not known&quot;</span>  <span class="co">#Note that this has the effect of coercing all the other values in the &#39;mpg&#39; column into a string vector.</span></code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">#Edit existing value</span>
+mtcars.loc[<span class="st">&quot;Mazda RX4&quot;</span>, <span class="st">&quot;mpg&quot;</span>] <span class="op">=</span> <span class="fl">21.1</span>
+
+<span class="co">#Create new value</span>
+mtcars.loc[<span class="st">&quot;Future Car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] <span class="op">=</span> <span class="dv">999</span> <span class="co">#Note that this has the effect of coercing all the other values in the &#39;mpg&#39; column into a string vector.</span>
+
+mtcars.loc[<span class="st">&quot;Future Car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] <span class="op">=</span> <span class="st">&quot;Not known&quot;</span> <span class="co">#This does not affect the other values in the &#39;mpg&#39; column</span></code></pre></div>
+<p>In the above I use ∞. This is the unicode string symbol for infinity.</p>
+<p>Note that in reality, R and Python both have a numeric concept of infinity:</p>
+<ul>
+<li>R has <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/is.finite.html">inf</a>.</li>
+<li>Python has <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.isinf.html">np.inf</a></li>
+</ul>
 </div>
+</div>
+<div id="subsetting" class="section level3 unnumbered">
+<h3>Subsetting</h3>
+</div>
+</div>
+<div id="setup" class="section level2 unnumbered">
+<h2>Setup</h2>
+<p>Here are some notes on running the code in this .Rmd.</p>
+<p>To run the code, you’ll want to remove <code>eval=FALSE</code> from the code blocks.</p>
+<p>In what follows we are going to use the <code>mtcars</code> dataset. If you want to run this code in Python, you’ll need access to the dataset. You can get this by doing: <code>pip install ggplot</code> and then in python <code>from ggplot import mtcars</code></p>
+<p>Note that in order for the Python code to execute, you need to make sure that <code>Sys.which('python')</code> returns the path for Anaconda rather than Mac OS default python. See <a href="http://rmarkdown.rstudio.com/authoring_knitr_engines.html">here</a>, <a href="http://stackoverflow.com/questions/27097169/why-r-is-calling-system-python-instead-of-default-python-in-user-path">here</a> and <a href="https://support.rstudio.com/hc/en-us/community/posts/207644217-Rstudio-server-doesn-t-have-login-user-s-environment-variables-">here</a>. The solution I found was</p>
+<pre><code>cd ~
+echo .Renviron &gt;&gt; PATH=/Users/robinlinacre/anaconda/bin</code></pre>
+
 </div>
 </div>
             </section>
@@ -226,8 +318,8 @@ df[]</code></pre></div>
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="setup.html" class="navigation navigation-next " aria-label="Next page""><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
 
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/lunr.js"></script>

@@ -17,35 +17,37 @@ mtcars = pd.read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/dataset
 
 **`R`**
 ```{r eval=FALSE}
-mtcars[1,]
-mtcars[c(1,2),]
+mtcars[1,]  #Select row number 1
+mtcars[c(1,2),] #Select row numbers 1 and 2
 ```
 
-This returns a `'data.frame':	1 obs. of  11 variables`
+This returns a `'data.frame':	1 obs. of  11 variables` or a `'data.frame':	2 obs. of  11 variables`
 
 **`Python`**
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
-mtcars.iloc[0,:]
-mtcars.iloc[[0,1],:]
+mtcars.iloc[0,:]  #Select row number 1 (zero based indexing)
+mtcars.iloc[[0,1],:]  #Select rows number 1 and 2.
 ```
 
-This returns a `pandas.core.series.Series`
+This returns a `pandas.core.series.Series` if you select a single row, or a `pandas.core.frame.DataFrame` if you select multiple rows.
 
 #### Selecting row by named index {-}
 
 **`R`**
 ```{r eval=FALSE}
 mtcars['Mazda RX4', ]
+mtcars[c('Mazda RX4','Mazda RX4 Wag'), ]
 ```
 
-This returns a `'data.frame':	1 obs. of  11 variables`
+This returns a `'data.frame':	1 obs. of  11 variables` or a `'data.frame':	2 obs. of  11 variables`
 
 **`Python`**
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
 mtcars.loc['Mazda RX4',:]
+mtcars.loc[['Mazda RX4', 'Mazda RX4 Wag'],:]
 ```
 
-This returns a `pandas.core.series.Series`
+This returns a `pandas.core.series.Series` if you select a single row, or a `pandas.core.frame.DataFrame` if you select multiple rows.
 
 ### Selecting columns {-}
 
@@ -54,16 +56,19 @@ This returns a `pandas.core.series.Series`
 **`R`**
 ```{r eval=FALSE}
 mtcars[,1 ]
+mtcars[,c(1,2)]
 ```
 
-This returns a numeric vector.
+If we select a single column, this return an atomic vector.
+If we select multiple columns, it returns a `'data.frame':	32 obs. of  2 variables:`
 
 **`Python`**
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
 mtcars.iloc[:,0]
 ```
 
-This returns a `pandas.core.series.Series`
+If we select a single column, this returns a `pandas.core.series.Series`.
+If we select multiple columns, it returns a `pandas.core.frame.DataFrame`.
 
 ### Selecting individual 'cells' (items) {-}
 
@@ -99,14 +104,41 @@ mtcars.loc['Mazda RX4','mpg]
 
 This returns a float.
 
-#### Obtaining the index itself
+### Selecting items with a logical vector {-}
+
+It is possible to use a logical vector (a series of ['truthy' and 'falsey'](https://gist.github.com/jfarmer/2647362) values) to filter a dataframe.
+
+For instance, if your rows are `1,2,3` a logical vector `true, false, true` will select rows 1 and 3.
+
+**`R`**
+```{r eval=FALSE}
+# The following df has 3 rows and 3 columns
+df <- read.csv("https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv", row.names = 1)
+logical_vector <- c(TRUE,FALSE, TRUE)
+df[logical_vector,]
+df[,logical_vector]
+
+logical_vector <- c(TRUE, FALSE)
+df[logical_vector,] #This works due to R's vector recyclig 
+df[,logical_vector]
+````
+
+For more on vector recycling in R, see [here](http://stackoverflow.com/questions/9335099/implementation-of-standard-recycling-rules).
 
 **`Python`**
 ```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
-mtcars.index
-mtcars.columns
+df = pd.read_csv("https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv", index_col=0)
+logical_vector = [True, False, True]
+df.loc[logical_vector,:]
+df.loc[:,logical_vector]
+
+logical_vector = [True, False]
+df.loc[logical_vector,:] #Different behaviour to R - no recycling
+df.loc[:,logical_vector]
 ```
-These are both of type `pandas.indexes.base.Index`
+
+
+#### Obtaining the index itself {-}
 
 **`R`**
 ```{r eval=FALSE}
@@ -115,7 +147,14 @@ rownames(mtcars)
 ```
 These are both atomic vectors of strings.
 
-###  Edge cases? {-}
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars.index
+mtcars.columns
+```
+These are both of type `pandas.indexes.base.Index`
+
+###  Edge cases {-}
 
 Things can get ambiguous in two situations:
 
@@ -123,23 +162,94 @@ Things can get ambiguous in two situations:
 2. You have an index with duplicate values.
 
 
-#### Integer row/columns names which aren't just 1,2,3...,n
+#### Integer row/columns names which aren't just 1,2,3...,n {-}
 
 In R, row names are always strings, which resolves this ambiguity  
+Data for these examples are [here](https://gist.github.com/RobinL/7378abcb98d70f642a4047f4e01fd428)
 
 **`R`**
 ```{r eval=FALSE}
-df <- read.csv("https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/a9f998ad9fdc314b1019fbc1866a2ea97d717b6a/f.csv", row.names = 1)
-df[c(1,2,3),]
-df[]
+df <- read.csv("https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/5e26ef7581804308cd244a499737ead03eba66e8/f.csv", row.names = 1)
+df[c(1,2,3),] # Selects rows in positions 1,2,3 
+df[c(1,2,3,7),] # Selects rows in positions 1,2,3 and a blank row
+df[c("2","4","6"),] #  #Selects rows named "2","4", and "6"" corresponding to position 1, 2 and 3
+df[c("2","4","5","6"),] # Row "5" does not exist, so it creates a blank row in the results
+```
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+df = pd.read_csv("https://gist.githubusercontent.com/RobinL/7378abcb98d70f642a4047f4e01fd428/raw/5e26ef7581804308cd244a499737ead03eba66e8/f.csv", index_col=0)
+df.iloc[[0,1,2],:] #Selects rows in position 1, 2 and 3
+df.iloc[[0,1,2,6],:] #IndexError: positional indexers are out-of-bounds
+
+df.loc[[2,4,6],:] #Selects rows named 2,4, and 6 corresponding to position 0, 1 and 2
+df.loc[[2,4,6,99],:] #Selects rows named 2,4, and 6 corresponding to position 0, 1 and 2, plus creates a row of NA with index 99
+```
+
+You can also use the pandas function `ix` for this, but I advise against it.  See advice on the use of `ix` [here](http://stackoverflow.com/questions/31593201/pandas-iloc-vs-ix-vs-loc-explanation/31593712#31593712).
+
+#### Duplicated row or column names {-}
+
+Consider [this](https://gist.github.com/RobinL/05eea0870961a80814da5ae22f25f407) table.
+
+**`R`**
+```{r eval=FALSE}
+df <- read.csv("https://gist.githubusercontent.com/RobinL/05eea0870961a80814da5ae22f25f407/raw/bd6f6cd2cf8edd22763e2afa460bf9a7c9bdd79b/tiny_dup.csv", row.names=1)
+#Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
+#  duplicate 'row.names' are not allowed
 ```
 
 
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+df = pd.read_csv("https://gist.githubusercontent.com/RobinL/05eea0870961a80814da5ae22f25f407/raw/bd6f6cd2cf8edd22763e2afa460bf9a7c9bdd79b/tiny_dup.csv", index_col=0, mangle_dupe_cols=False)
 
-### Subsetting
+df.loc[2, "b"] # Returns 2 rows and 2 columns
+```
+
+### Writing to a dataframe {-}
+
+#### Writing to individual 'cells {-}
+
+In what follows I use name based indexing, but the following would also work with numeric (positional) indexing.
+
+**`R`**
+```{r eval=FALSE}
+#Edit existing value
+mtcars["Mazda RX4", "mpg"] = 21.1
+
+#Create new value
+mtcars["Future car", "mpg"] = 999 #A new row is created.  All values are set to NA except for 'mpg' column
+
+mtcars["Future car", "mpg"] = "Not known"  #Note that this has the effect of coercing all the other values in the 'mpg' column into a string vector.
+
+```
 
 
-#Setup {-}
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+#Edit existing value
+mtcars.loc["Mazda RX4", "mpg"] = 21.1
+
+#Create new value
+mtcars.loc["Future Car", "mpg"] = 999 #Note that this has the effect of coercing all the other values in the 'mpg' column into a string vector.
+
+mtcars.loc["Future Car", "mpg"] = "Not known" #This does not affect the other values in the 'mpg' column
+
+
+```
+
+In the above I use ∞. This is the unicode string symbol for infinity.
+
+Note that in reality, R and Python both have a numeric concept of infinity:
+
+- R has [inf](https://stat.ethz.ch/R-manual/R-devel/library/base/html/is.finite.html).
+- Python has [np.inf](https://docs.scipy.org/doc/numpy/reference/generated/numpy.isinf.html)
+
+### Subsetting {-}
+
+
+##Setup {-}
 
 Here are some notes on running the code in this .Rmd.
 
@@ -153,3 +263,5 @@ Note that in order for the Python code to execute, you need to make sure that `S
 cd ~
 echo .Renviron >> PATH=/Users/robinlinacre/anaconda/bin
 ````
+
+
