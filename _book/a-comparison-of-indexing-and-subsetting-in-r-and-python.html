@@ -107,7 +107,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#selecting-items-with-a-logical-vector"><i class="fa fa-check"></i>Selecting items with a logical vector</a></li>
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#edge-cases"><i class="fa fa-check"></i>Edge cases</a></li>
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#writing-to-a-dataframe"><i class="fa fa-check"></i>Writing to a dataframe</a></li>
-<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#subsetting"><i class="fa fa-check"></i>Subsetting</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#subsetting-and-filtering"><i class="fa fa-check"></i>Subsetting and filtering</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#operations-on-columns"><i class="fa fa-check"></i>Operations on columns</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#other-stuff"><i class="fa fa-check"></i>Other stuff</a></li>
+<li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#pivot-tablescross-tabulations"><i class="fa fa-check"></i>Pivot tables/cross tabulations</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="a-comparison-of-indexing-and-subsetting-in-r-and-python.html"><a href="a-comparison-of-indexing-and-subsetting-in-r-and-python.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 </ul></li>
@@ -272,7 +275,7 @@ df.loc[<span class="dv">2</span>, <span class="st">&quot;b&quot;</span>] <span c
 <div id="writing-to-a-dataframe" class="section level3 unnumbered">
 <h3>Writing to a dataframe</h3>
 <div id="writing-to-individual-cells" class="section level4 unnumbered">
-<h4>Writing to individual ’cells</h4>
+<h4>Writing to individual cells</h4>
 <p>In what follows I use name based indexing, but the following would also work with numeric (positional) indexing.</p>
 <p><strong><code>R</code></strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Edit existing value</span>
@@ -290,16 +293,119 @@ mtcars.loc[<span class="st">&quot;Mazda RX4&quot;</span>, <span class="st">&quot
 mtcars.loc[<span class="st">&quot;Future Car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] <span class="op">=</span> <span class="dv">999</span> <span class="co">#Note that this has the effect of coercing all the other values in the &#39;mpg&#39; column into a string vector.</span>
 
 mtcars.loc[<span class="st">&quot;Future Car&quot;</span>, <span class="st">&quot;mpg&quot;</span>] <span class="op">=</span> <span class="st">&quot;Not known&quot;</span> <span class="co">#This does not affect the other values in the &#39;mpg&#39; column</span></code></pre></div>
-<p>In the above I use ∞. This is the unicode string symbol for infinity.</p>
-<p>Note that in reality, R and Python both have a numeric concept of infinity:</p>
-<ul>
-<li>R has <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/is.finite.html">inf</a>.</li>
-<li>Python has <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.isinf.html">np.inf</a></li>
-</ul>
+</div>
+<div id="writing-a-new-row-with-multiple-values" class="section level4">
+<h4><span class="header-section-number">0.0.0.1</span> Writing a new row with multiple values</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># If you have all the values for the new row you can do this</span>
+mtcars[<span class="st">&quot;New car&quot;</span>,] &lt;-<span class="st"> </span><span class="er">&lt;</span>-<span class="st"> </span><span class="kw">list</span>(<span class="dt">mpg =</span> <span class="dv">100</span>, <span class="dt">cyl =</span> <span class="dv">2</span>, <span class="dt">disp =</span> <span class="ot">NA</span>, <span class="dt">hp =</span> <span class="ot">NA</span>, <span class="dt">drat =</span> <span class="ot">NA</span>, <span class="dt">wt =</span> <span class="ot">NA</span>, <span class="dt">qsec =</span> <span class="ot">NA</span>, <span class="dt">vs =</span> <span class="ot">NA</span>, <span class="dt">am =</span> <span class="ot">NA</span>, <span class="dt">gear =</span> <span class="ot">NA</span>, <span class="dt">carb =</span> <span class="ot">NA</span>)
+
+<span class="co"># This is probably a bad idea because it recycles the list for you</span>
+mtcars[<span class="st">&quot;New car&quot;</span>,] &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">list</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>))
+
+<span class="co">#You can also edit an existing row like this:</span>
+mtcars[<span class="st">&quot;Datsun 710&quot;</span>,] &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">mpg =</span> <span class="dv">100</span>, <span class="dt">cyl =</span> <span class="dv">2</span>, <span class="dt">disp =</span> <span class="ot">NA</span>, <span class="dt">hp =</span> <span class="ot">NA</span>, <span class="dt">drat =</span> <span class="ot">NA</span>, <span class="dt">wt =</span> <span class="ot">NA</span>, <span class="dt">qsec =</span> <span class="ot">NA</span>, <span class="dt">vs =</span> <span class="ot">NA</span>, <span class="dt">am =</span> <span class="ot">NA</span>, <span class="dt">gear =</span> <span class="ot">NA</span>, <span class="dt">carb =</span> <span class="ot">NA</span>)</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co">#Write mutilple values using a pandas series</span>
+mtcars.loc[<span class="st">&quot;New car&quot;</span>,:] <span class="op">=</span> pd.Series({<span class="st">&quot;mpg&quot;</span>: <span class="dv">100</span>, <span class="st">&quot;cyl&quot;</span>: <span class="dv">2</span>})
+
+<span class="co">#You don&#39;t need a full row.  Where values don&#39;t exist in the series, NAs will be inserted into the new row</span>
+mtcars.loc[<span class="st">&quot;Datsun 710&quot;</span>,:] <span class="op">=</span> pd.Series({<span class="st">&quot;mpg&quot;</span>: <span class="dv">100</span>, <span class="st">&quot;cyl&quot;</span>: <span class="dv">2</span>})
+<span class="co">#Note that this overwrites all the unspecified coluns to NA</span></code></pre></div>
+</div>
+<div id="writing-a-new-column-with-multiple-values" class="section level4 unnumbered">
+<h4>Writing a new column with multiple values</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv&quot;</span>, <span class="dt">row.names =</span> <span class="dv">1</span>)
+
+<span class="co">#One option is </span>
+df[,<span class="st">&quot;d&quot;</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)
+
+<span class="co">#Another options is </span>
+df[<span class="st">&quot;d&quot;</span>] =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">df <span class="op">=</span> pd.read_csv(<span class="st">&quot;https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/c111232bb1fd564bae084be45c988d63053ab843/tiny.csv&quot;</span>, index_col<span class="op">=</span><span class="dv">0</span>)
+
+<span class="co">#One option is:</span>
+df.loc[:, <span class="st">&quot;d&quot;</span>] <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]
+
+<span class="co">#Another option is </span>
+df[<span class="st">&quot;d&quot;</span>] <span class="op">=</span> [<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>]</code></pre></div>
 </div>
 </div>
-<div id="subsetting" class="section level3 unnumbered">
-<h3>Subsetting</h3>
+<div id="subsetting-and-filtering" class="section level3 unnumbered">
+<h3>Subsetting and filtering</h3>
+<div id="simple-rows-filter" class="section level4 unnumbered">
+<h4>Simple rows filter</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filter_vector &lt;-<span class="st"> </span>mtcars[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">20</span>
+mtcars[filter_vector, ]</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">filter_vector <span class="op">=</span>  mtcars[<span class="st">&quot;mpg&quot;</span>] <span class="op">&gt;</span> <span class="dv">20</span>
+mtcars[filter_vector]
+
+<span class="co">#An alternative is</span>
+mtcars.loc[filter_vector, :]</code></pre></div>
+</div>
+</div>
+<div id="operations-on-columns" class="section level3 unnumbered">
+<h3>Operations on columns</h3>
+<div id="filter-column-names" class="section level4 unnumbered">
+<h4>Filter column names</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[,!<span class="kw">names</span>(mtcars) %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;cyl&quot;</span>)]</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars[c <span class="cf">for</span> c <span class="op">in</span> mtcars.columns <span class="cf">if</span> c <span class="op">not</span> <span class="op">in</span> [<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;cyl&quot;</span>]]
+
+<span class="co">#Or if you wanted to stick closer to the R syntax you could do:</span>
+mtcars.loc[:,<span class="op">~</span>np.in1d(mtcars.columns, [<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;cyl&quot;</span> ])]</code></pre></div>
+</div>
+<div id="sort-order-of-columns" class="section level4 unnumbered">
+<h4>Sort order of columns</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[,<span class="kw">sort</span>(<span class="kw">names</span>(mtcars))]</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars[<span class="bu">sorted</span>(mtcars.columns)]</code></pre></div>
+</div>
+</div>
+<div id="other-stuff" class="section level3 unnumbered">
+<h3>Other stuff</h3>
+<div id="application-of-custom-function-across-data-frame" class="section level4 unnumbered">
+<h4>Application of custom function across data frame</h4>
+</div>
+<div id="transposition" class="section level4 unnumbered">
+<h4>Transposition</h4>
+<p>When you transpose an R dataframe, implicit type conversion can get you Pandas has an advantage here because columns can be of mixed type.</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">all</span>(<span class="kw">t</span>(<span class="kw">t</span>(iris)) ==<span class="st"> </span>iris) <span class="co"># returns false</span></code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="bu">all</span>(iris.T.T <span class="op">==</span> iris) <span class="co"># returns true</span></code></pre></div>
+</div>
+</div>
+<div id="pivot-tablescross-tabulations" class="section level3 unnumbered">
+<h3>Pivot tables/cross tabulations</h3>
+<p>This is quite tricky in <strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Simple pivot table in the tidyverse</span>
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(tidyr)
+mtcars %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(cyl, vs) %&gt;%
+<span class="st">  </span><span class="kw">summarise</span>(<span class="dt">count_hp =</span> <span class="kw">n</span>()) %&gt;%
+<span class="st">  </span><span class="kw">spread</span>(vs, count_hp)
+
+<span class="co">#Pivot table with multiple values aggregatedwith different agg functions (see python version for clearer description) </span>
+<span class="kw">library</span>(data.frame)
+df &lt;-<span class="st"> </span><span class="kw">merge</span>(<span class="kw">dcast</span>(<span class="kw">data.table</span>(mtcars), cyl ~<span class="st"> </span>vs, mean, <span class="dt">value.var =</span> <span class="st">&quot;mpg&quot;</span>),
+      <span class="kw">dcast</span>(<span class="kw">data.table</span>(mtcars), cyl ~<span class="st"> </span>vs, length, <span class="dt">value.var =</span> <span class="st">&quot;hp&quot;</span>), <span class="dt">by =</span> <span class="st">&quot;cyl&quot;</span>)
+<span class="kw">names</span>(df) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;cyl&quot;</span>, <span class="st">&quot;mean_vs_0&quot;</span>, <span class="st">&quot;mean_vs_1&quot;</span>, <span class="st">&quot;count_vs_0&quot;</span>, <span class="st">&quot;count_vs_1&quot;</span>)</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">
+<span class="co">#Simple Pivot table</span>
+mtcars.pivot_table(index<span class="op">=</span><span class="st">&quot;cyl&quot;</span>, columns<span class="op">=</span><span class="st">&quot;vs&quot;</span>, values <span class="op">=</span> <span class="st">&quot;hp&quot;</span>, aggfunc<span class="op">=</span><span class="st">&quot;count&quot;</span>)
+
+<span class="co">#Note the benfits of multi indexing in the following example</span>
+df <span class="op">=</span> mtcars.pivot_table(index<span class="op">=</span><span class="st">&quot;cyl&quot;</span>, columns<span class="op">=</span><span class="st">&quot;vs&quot;</span>, values <span class="op">=</span> [<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>], aggfunc<span class="op">=</span>{<span class="st">&quot;mpg&quot;</span>:np.mean, <span class="st">&quot;hp&quot;</span>:<span class="st">&quot;count&quot;</span>})
+df.columns <span class="op">=</span> df.columns.set_levels([<span class="st">&#39;mpg_mean&#39;</span>, <span class="st">&#39;hp_count&#39;</span>], level<span class="op">=</span><span class="dv">0</span>)</code></pre></div>
 </div>
 </div>
 <div id="setup" class="section level2 unnumbered">

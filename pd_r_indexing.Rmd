@@ -209,7 +209,7 @@ df.loc[2, "b"] # Returns 2 rows and 2 columns
 
 ### Writing to a dataframe {-}
 
-#### Writing to individual 'cells {-}
+#### Writing to individual cells {-}
 
 In what follows I use name based indexing, but the following would also work with numeric (positional) indexing.
 
@@ -239,14 +239,163 @@ mtcars.loc["Future Car", "mpg"] = "Not known" #This does not affect the other va
 
 ```
 
-In the above I use ∞. This is the unicode string symbol for infinity.
+#### Writing a new row with multiple values
 
-Note that in reality, R and Python both have a numeric concept of infinity:
+**`R`**
+```{r eval=FALSE}
+# If you have all the values for the new row you can do this
+mtcars["New car",] <- <- list(mpg = 100, cyl = 2, disp = NA, hp = NA, drat = NA, wt = NA, qsec = NA, vs = NA, am = NA, gear = NA, carb = NA)
 
-- R has [inf](https://stat.ethz.ch/R-manual/R-devel/library/base/html/is.finite.html).
-- Python has [np.inf](https://docs.scipy.org/doc/numpy/reference/generated/numpy.isinf.html)
+# This is probably a bad idea because it recycles the list for you
+mtcars["New car",] <- data.frame(list(1,2,3))
 
-### Subsetting {-}
+#You can also edit an existing row like this:
+mtcars["Datsun 710",] <- list(mpg = 100, cyl = 2, disp = NA, hp = NA, drat = NA, wt = NA, qsec = NA, vs = NA, am = NA, gear = NA, carb = NA)
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+#Write mutilple values using a pandas series
+mtcars.loc["New car",:] = pd.Series({"mpg": 100, "cyl": 2})
+
+#You don't need a full row.  Where values don't exist in the series, NAs will be inserted into the new row
+mtcars.loc["Datsun 710",:] = pd.Series({"mpg": 100, "cyl": 2})
+#Note that this overwrites all the unspecified coluns to NA
+```
+
+#### Writing a new column with multiple values {-}
+
+**`R`**
+```{r eval=FALSE}
+df <- read.csv("https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/62747b776c63c9bd367bcdc11fe7d6a3459eaa12/tiny.csv", row.names = 1)
+
+#One option is 
+df[,"d"] = c(1,2,3)
+
+#Another options is 
+df["d"] = c(1,2,3)
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+df = pd.read_csv("https://gist.githubusercontent.com/RobinL/dae60170438c5e0adcd0c68fbaa6abdf/raw/c111232bb1fd564bae084be45c988d63053ab843/tiny.csv", index_col=0)
+
+#One option is:
+df.loc[:, "d"] = [1,2,3]
+
+#Another option is 
+df["d"] = [1,2,3]
+```
+
+
+### Subsetting and filtering {-}
+
+#### Simple rows filter {-}
+
+**`R`**
+```{r eval=FALSE}
+filter_vector <- mtcars["mpg"] > 20
+mtcars[filter_vector, ]
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+filter_vector =  mtcars["mpg"] > 20
+mtcars[filter_vector]
+
+#An alternative is
+mtcars.loc[filter_vector, :]
+```
+
+### Operations on columns {-}
+
+#### Filter column names {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars[,!names(mtcars) %in% c("mpg", "cyl")]
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars[c for c in mtcars.columns if c not in ["mpg", "cyl"]]
+
+#Or if you wanted to stick closer to the R syntax you could do:
+mtcars.loc[:,~np.in1d(mtcars.columns, ["mpg", "cyl" ])]
+```
+
+
+#### Sort order of columns {-} 
+
+**`R`**
+```{r eval=FALSE}
+mtcars[,sort(names(mtcars))]
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars[sorted(mtcars.columns)]
+```
+
+### Other stuff {-}
+
+#### Application of custom function across data frame {-}
+
+
+
+#### Transposition {-} 
+
+When you transpose an R dataframe, implicit type conversion can get you
+Pandas has an advantage here because columns can be of mixed type.  
+
+**`R`**
+```{r eval=FALSE}
+all(t(t(iris)) == iris) # returns false
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+all(iris.T.T == iris) # returns true
+```
+
+### Pivot tables/cross tabulations {-}
+
+This is quite tricky in 
+**`R`**
+```{r eval=FALSE}
+
+#Simple pivot table in the tidyverse
+library(dplyr)
+library(tidyr)
+mtcars %>%
+  group_by(cyl, vs) %>%
+  summarise(count_hp = n()) %>%
+  spread(vs, count_hp)
+
+#Pivot table with multiple values aggregatedwith different agg functions (see python version for clearer description) 
+library(data.frame)
+df <- merge(dcast(data.table(mtcars), cyl ~ vs, mean, value.var = "mpg"),
+      dcast(data.table(mtcars), cyl ~ vs, length, value.var = "hp"), by = "cyl")
+names(df) <- c("cyl", "mean_vs_0", "mean_vs_1", "count_vs_0", "count_vs_1")
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+
+#Simple Pivot table
+mtcars.pivot_table(index="cyl", columns="vs", values = "hp", aggfunc="count")
+
+#Note the benfits of multi indexing in the following example
+df = mtcars.pivot_table(index="cyl", columns="vs", values = ["mpg", "hp"], aggfunc={"mpg":np.mean, "hp":"count"})
+df.columns = df.columns.set_levels(['mpg_mean', 'hp_count'], level=0)
+```
 
 
 ##Setup {-}
