@@ -1,7 +1,6 @@
-# A comparison of indexing and subsetting in R and Python {-}
 
 
-## Dataframes {-}
+# Dataframes {-}
 
 In what follows we assume Python has access to a dataframe called mtcars which is constructed on the same basis as the R one.
 
