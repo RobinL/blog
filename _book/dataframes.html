@@ -108,6 +108,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#writing-to-a-dataframe"><i class="fa fa-check"></i>Writing to a dataframe</a></li>
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#subsetting-and-filtering"><i class="fa fa-check"></i>Subsetting and filtering</a></li>
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#operations-on-columns"><i class="fa fa-check"></i>Operations on columns</a></li>
+<li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#computing-new-columns-from-existing-columns"><i class="fa fa-check"></i>Computing new columns from existing columns</a></li>
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#other-stuff"><i class="fa fa-check"></i>Other stuff</a></li>
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#pivot-tablescross-tabulations"><i class="fa fa-check"></i>Pivot tables/cross tabulations</a></li>
 <li class="chapter" data-level="" data-path="dataframes.html"><a href="dataframes.html#setup"><i class="fa fa-check"></i>Setup</a></li>
@@ -364,12 +365,28 @@ mtcars.loc[:,<span class="op">~</span>np.in1d(mtcars.columns, [<span class="st">
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars[<span class="bu">sorted</span>(mtcars.columns)]</code></pre></div>
 </div>
 </div>
-<div id="other-stuff" class="section level3 unnumbered">
-<h3>Other stuff</h3>
+<div id="computing-new-columns-from-existing-columns" class="section level3 unnumbered">
+<h3>Computing new columns from existing columns</h3>
+<div id="simple-addition" class="section level4 unnumbered">
+<h4>Simple addition</h4>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="st">&quot;kmpl&quot;</span>] &lt;-<span class="st"> </span>mtcars[<span class="st">&quot;mpg&quot;</span>]/<span class="fl">2.35214583</span></code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars[<span class="st">&quot;kmpl&quot;</span>] <span class="op">=</span>  mtcars[<span class="st">&quot;mpg&quot;</span>]<span class="op">/</span><span class="fl">2.35214583</span></code></pre></div>
+</div>
+<div id="more-complex-operations" class="section level4 unnumbered">
+<h4>More complex operations</h4>
+<p>Where possible you should vectorise your computations.</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars[<span class="st">&quot;ifoutput&quot;</span>]  &lt;-<span class="st"> </span><span class="kw">ifelse</span>(mtcars[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">15</span>, <span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>)</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">mtcars[<span class="st">&quot;ifoutput&quot;</span>] <span class="op">=</span> np.where(mtcars[<span class="st">&quot;mpg&quot;</span>] <span class="op">&gt;</span> <span class="dv">15</span>, <span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>)</code></pre></div>
+</div>
 <div id="application-of-custom-function-across-data-frame" class="section level4 unnumbered">
 <h4>Application of custom function across data frame</h4>
 <p>Generally you should use vectorised operations to manupulate dataframe - this is much faster/more efficient.</p>
-<p>But here’s how to apply a functino row by row: <strong><code>R</code></strong></p>
+<p>But if you need to here’s how to apply a function row by row:</p>
+<p><strong><code>R</code></strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn_to_apply &lt;-<span class="st"> </span>function(row) {
     <span class="co">#row is a named character vector - there is implicit type conversion happening here</span>
     if (row[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">15</span>) {
@@ -380,7 +397,7 @@ mtcars.loc[:,<span class="op">~</span>np.in1d(mtcars.columns, [<span class="st">
     <span class="kw">return</span>(<span class="st">&quot;another thing&quot;</span>)
 }
 
-mtcars[<span class="st">&quot;new_variable&quot;</span>] &lt;-<span class="st"> </span><span class="kw">apply</span>(mtcars,<span class="dv">1</span>, fn_to_apply)</code></pre></div>
+mtcars[<span class="st">&quot;new_variable&quot;</span>] &lt;-<span class="st"> </span><span class="kw">apply</span>(mtcars,<span class="dt">MARGIN=</span><span class="dv">1</span>, fn_to_apply)</code></pre></div>
 <p><strong><code>Python</code></strong></p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> fn_to_apply(row):
     <span class="co">&quot;&quot;&quot;</span>
@@ -393,6 +410,59 @@ mtcars[<span class="st">&quot;new_variable&quot;</span>] &lt;-<span class="st"> 
     <span class="cf">return</span> <span class="st">&quot;another thing&quot;</span>
 
 mtcars[<span class="st">&quot;new_variable&quot;</span>] <span class="op">=</span> mtcars.<span class="bu">apply</span>(fn_to_apply,axis<span class="op">=</span><span class="dv">1</span>)</code></pre></div>
+<p>Here’s another way of doing this in r using the purr package:</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn_to_apply &lt;-<span class="st"> </span>function(row) {
+    <span class="co">#row is a named character vector - there is implicit type conversion happening here</span>
+    if (row[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">15</span>) {
+        if (row[<span class="st">&quot;carb&quot;</span>] ==<span class="st"> </span><span class="dv">4</span>) {
+            <span class="kw">return</span>(<span class="st">&quot;one thing&quot;</span>)
+        }
+    }
+    <span class="kw">return</span>(<span class="st">&quot;another thing&quot;</span>)
+}</code></pre></div>
+</div>
+</div>
+<div id="other-stuff" class="section level3 unnumbered">
+<h3>Other stuff</h3>
+<div id="piping" class="section level4">
+<h4><span class="header-section-number">0.0.0.2</span> Piping</h4>
+<p>Checkout <a href="https://tomaugspurger.github.io/method-chaining.html">this</a> for 🐍.</p>
+<p>Suppose we want to filter then apply a function, then do a group by and a summary. We’ll use dplyr in R</p>
+<p><strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn_to_apply &lt;-<span class="st"> </span>function(row) {
+    <span class="co">#row is a named character vector - there is implicit type conversion happening here</span>
+    if (row[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">15</span>) {
+        if (row[<span class="st">&quot;carb&quot;</span>] ==<span class="st"> </span><span class="dv">4</span>) {
+            <span class="kw">return</span>(<span class="st">&quot;one thing&quot;</span>)
+        }
+    }
+    <span class="kw">return</span>(<span class="st">&quot;another thing&quot;</span>)
+}
+
+mtcars %&gt;%
+<span class="st">    </span><span class="kw">filter</span>(mpg &gt;<span class="st"> </span><span class="dv">10</span>) %&gt;%
+<span class="st">    </span><span class="kw">by_row</span>(fn_to_apply, <span class="dt">.to =</span> <span class="st">&quot;new_col&quot;</span>, <span class="dt">.collate =</span> <span class="kw">c</span>(<span class="st">&quot;row&quot;</span>)) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">group_by</span>(new_col) %&gt;%
+<span class="st">    </span><span class="kw">summarise_each</span>(<span class="kw">funs</span>(mean))</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> pipe_fn(df):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    Pipe expects a function that takes a dataframe as argument and returns a dataframe.</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="kw">def</span> fn_to_apply(row):
+        <span class="cf">if</span> row[<span class="st">&quot;mpg&quot;</span>] <span class="op">&gt;</span> <span class="dv">15</span>:
+            <span class="cf">if</span> row[<span class="st">&quot;carb&quot;</span>] <span class="op">==</span> <span class="dv">4</span>:
+                <span class="cf">return</span> <span class="st">&quot;one thing&quot;</span>
+        <span class="cf">return</span> <span class="st">&quot;another thing&quot;</span>
+    df[<span class="st">&quot;new_col&quot;</span>] <span class="op">=</span> df.<span class="bu">apply</span>(fn_to_apply,axis<span class="op">=</span><span class="dv">1</span>)
+    <span class="cf">return</span> df 
+
+mtcars<span class="op">\</span>
+    .query(<span class="st">&quot;mpg &gt; 10&quot;</span>)<span class="op">\</span>
+    .pipe(pipe_fn)<span class="op">\</span>
+    .groupby(<span class="st">&quot;new_col&quot;</span>)<span class="op">\</span>
+    .mean()</code></pre></div>
 </div>
 <div id="transposition" class="section level4 unnumbered">
 <h4>Transposition</h4>

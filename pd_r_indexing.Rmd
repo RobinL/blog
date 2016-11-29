@@ -341,13 +341,44 @@ mtcars[,sort(names(mtcars))]
 mtcars[sorted(mtcars.columns)]
 ```
 
-### Other stuff {-}
+### Computing new columns from existing columns {-}
+
+#### Simple addition {-}
+
+**`R`**
+```{r eval=FALSE}
+mtcars["kmpl"] <- mtcars["mpg"]/2.35214583
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars["kmpl"] =  mtcars["mpg"]/2.35214583
+```
+
+#### More complex operations {-}
+
+Where possible you should vectorise your computations.
+
+
+**`R`**
+```{r eval=FALSE}
+mtcars["ifoutput"]  <- ifelse(mtcars["mpg"] > 15, "yes", "no")
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+mtcars["ifoutput"] = np.where(mtcars["mpg"] > 15, "yes", "no")
+```
+
 
 #### Application of custom function across data frame {-}
 
 Generally you should use vectorised operations to manupulate dataframe - this is much faster/more efficient.
 
-But here's how to apply a functino row by row:
+But if you need to here's how to apply a function row by row:
+
 **`R`**
 ```{r eval=FALSE}
 fn_to_apply <- function(row) {
@@ -360,7 +391,7 @@ fn_to_apply <- function(row) {
     return("another thing")
 }
 
-mtcars["new_variable"] <- apply(mtcars,1, fn_to_apply)
+mtcars["new_variable"] <- apply(mtcars,MARGIN=1, fn_to_apply)
 ```
 
 
@@ -379,6 +410,78 @@ def fn_to_apply(row):
 mtcars["new_variable"] = mtcars.apply(fn_to_apply,axis=1)
 
 ```
+
+Here's another way of doing this in r using the purr package:
+
+**`R`**
+```{r eval=FALSE}
+fn_to_apply <- function(row) {
+    #row is a named character vector - there is implicit type conversion happening here
+    if (row["mpg"] > 15) {
+        if (row["carb"] == 4) {
+            return("one thing")
+        }
+    }
+    return("another thing")
+}
+
+
+```
+
+
+### Other stuff {-}
+
+#### Piping
+
+Checkout [this](https://tomaugspurger.github.io/method-chaining.html) for 🐍.
+
+Suppose we want to filter then apply a function, then do a group by and a summary.  We'll use dplyr in R 
+
+**`R`**
+```{r eval=FALSE}
+fn_to_apply <- function(row) {
+    #row is a named character vector - there is implicit type conversion happening here
+    if (row["mpg"] > 15) {
+        if (row["carb"] == 4) {
+            return("one thing")
+        }
+    }
+    return("another thing")
+}
+
+mtcars %>%
+    filter(mpg > 10) %>%
+    by_row(fn_to_apply, .to = "new_col", .collate = c("row")) %>% 
+    group_by(new_col) %>%
+    summarise_each(funs(mean))
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+def pipe_fn(df):
+    """
+    Pipe expects a function that takes a dataframe as argument and returns a dataframe.
+    """
+    def fn_to_apply(row):
+        if row["mpg"] > 15:
+            if row["carb"] == 4:
+                return "one thing"
+        return "another thing"
+    df["new_col"] = df.apply(fn_to_apply,axis=1)
+    return df 
+
+mtcars\
+    .query("mpg > 10")\
+    .pipe(pipe_fn)\
+    .groupby("new_col")\
+    .mean()
+```
+
+
+
+
+
 
 
 #### Transposition {-} 
