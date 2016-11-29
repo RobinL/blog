@@ -431,7 +431,7 @@ fn_to_apply <- function(row) {
 
 ### Other stuff {-}
 
-#### Piping
+#### Piping {-}
 
 Checkout [this](https://tomaugspurger.github.io/method-chaining.html) for 🐍.
 
