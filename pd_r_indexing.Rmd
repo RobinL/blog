@@ -345,6 +345,40 @@ mtcars[sorted(mtcars.columns)]
 
 #### Application of custom function across data frame {-}
 
+Generally you should use vectorised operations to manupulate dataframe - this is much faster/more efficient.
+
+But here's how to apply a functino row by row:
+**`R`**
+```{r eval=FALSE}
+fn_to_apply <- function(row) {
+    #row is a named character vector - there is implicit type conversion happening here
+    if (row["mpg"] > 15) {
+        if (row["carb"] == 4) {
+            return("one thing")
+        }
+    }
+    return("another thing")
+}
+
+mtcars["new_variable"] <- apply(mtcars,1, fn_to_apply)
+```
+
+
+**`Python`**
+```{python eval=FALSE, engine.path="/Users/robinlinacre/anaconda/bin/python.app"} 
+def fn_to_apply(row):
+    """
+    Note that row is a pandas.core.series.Series
+    representing a single row of the df
+    """
+    if row["mpg"] > 15:
+        if row["carb"] == 4:
+            return "one thing"
+    return "another thing"
+
+mtcars["new_variable"] = mtcars.apply(fn_to_apply,axis=1)
+
+```
 
 
 #### Transposition {-} 

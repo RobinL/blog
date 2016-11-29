@@ -368,6 +368,31 @@ mtcars.loc[:,<span class="op">~</span>np.in1d(mtcars.columns, [<span class="st">
 <h3>Other stuff</h3>
 <div id="application-of-custom-function-across-data-frame" class="section level4 unnumbered">
 <h4>Application of custom function across data frame</h4>
+<p>Generally you should use vectorised operations to manupulate dataframe - this is much faster/more efficient.</p>
+<p>But here’s how to apply a functino row by row: <strong><code>R</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn_to_apply &lt;-<span class="st"> </span>function(row) {
+    <span class="co">#row is a named character vector - there is implicit type conversion happening here</span>
+    if (row[<span class="st">&quot;mpg&quot;</span>] &gt;<span class="st"> </span><span class="dv">15</span>) {
+        if (row[<span class="st">&quot;carb&quot;</span>] ==<span class="st"> </span><span class="dv">4</span>) {
+            <span class="kw">return</span>(<span class="st">&quot;one thing&quot;</span>)
+        }
+    }
+    <span class="kw">return</span>(<span class="st">&quot;another thing&quot;</span>)
+}
+
+mtcars[<span class="st">&quot;new_variable&quot;</span>] &lt;-<span class="st"> </span><span class="kw">apply</span>(mtcars,<span class="dv">1</span>, fn_to_apply)</code></pre></div>
+<p><strong><code>Python</code></strong></p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="kw">def</span> fn_to_apply(row):
+    <span class="co">&quot;&quot;&quot;</span>
+<span class="co">    Note that row is a pandas.core.series.Series</span>
+<span class="co">    representing a single row of the df</span>
+<span class="co">    &quot;&quot;&quot;</span>
+    <span class="cf">if</span> row[<span class="st">&quot;mpg&quot;</span>] <span class="op">&gt;</span> <span class="dv">15</span>:
+        <span class="cf">if</span> row[<span class="st">&quot;carb&quot;</span>] <span class="op">==</span> <span class="dv">4</span>:
+            <span class="cf">return</span> <span class="st">&quot;one thing&quot;</span>
+    <span class="cf">return</span> <span class="st">&quot;another thing&quot;</span>
+
+mtcars[<span class="st">&quot;new_variable&quot;</span>] <span class="op">=</span> mtcars.<span class="bu">apply</span>(fn_to_apply,axis<span class="op">=</span><span class="dv">1</span>)</code></pre></div>
 </div>
 <div id="transposition" class="section level4 unnumbered">
 <h4>Transposition</h4>
